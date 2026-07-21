@@ -22,6 +22,13 @@ function logMsg()
 {
 }
 
+if (!function_exists('isLogEnabled')) {
+    function isLogEnabled(string|int $level): bool
+    {
+        return false;
+    }
+}
+
 if (!function_exists('concat')) {
     function concat(): string
     {

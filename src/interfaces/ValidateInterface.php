@@ -71,6 +71,13 @@ interface ValidateInterface
     public function values(array $input): self;
 
     /**
+     * Retrieve the current data set being validated.
+     *
+     * @return array
+     */
+    public function getValues(): array;
+
+    /**
      * Attach validation rules to a specific key within the current data set.
      *
      * @param string $name Input key to validate.
@@ -105,9 +112,10 @@ interface ValidateInterface
     /**
      * Toggle throwing exceptions when validation fails.
      *
+     * @param bool $bool
      * @return self
      */
-    public function throwExceptionOnFailure(): self;
+    public function throwExceptionOnFailure(bool $bool = true): self;
 
     /**
      * Override the delimiter used within nested notation (e.g., dot-notation).
@@ -131,10 +139,10 @@ interface ValidateInterface
      * @param string $human Optional human-friendly label for the input.
      * @param string $options Additional context or options for the error.
      * @param string $rule Rule name that triggered the error.
-     * @param string $input Input key or value associated with the error.
+     * @param mixed $input Input key or value associated with the error.
      * @return self
      */
-    public function addError(string $errorMsg, string $human = '', string $options = '', string $rule = '', string $input = ''): self;
+    public function addError(string $errorMsg, string $human = '', string $options = '', string $rule = '', mixed $input = ''): self;
 
     /**
      * Determine if at least one error has been recorded.

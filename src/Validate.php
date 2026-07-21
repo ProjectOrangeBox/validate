@@ -269,10 +269,10 @@ class Validate extends Factory implements ValidateInterface
      * @param string $human
      * @param string $options
      * @param string $rule
-     * @param string $input
+     * @param mixed $input
      * @return Validate
      */
-    public function addError(string $errorMsg, string $human = '', string $options = '', string $rule = '', string $input = ''): self
+    public function addError(string $errorMsg, string $human = '', string $options = '', string $rule = '', mixed $input = ''): self
     {
         // There are %d monkeys in the %s (in order)
         // The %2$s contains %1$d monkeys (arg by number)
@@ -471,7 +471,10 @@ class Validate extends Factory implements ValidateInterface
             $this->callRule($input, $rule);
         } catch (RuleFailed $e) {
             // if the rule or filter threw an error it is captured here
-            $this->addError($e->getMessage(), $human, $this->currentOptions, $this->currentRule, (string)$previousValue);
+            // $previousValue is passed as-is (not cast to string) since it may be
+            // an array or an object without __toString(), either of which would
+            // throw when coerced to string
+            $this->addError($e->getMessage(), $human, $this->currentOptions, $this->currentRule, $previousValue);
 
             // stop on first error
             $this->stopProcessing = true;
@@ -510,10 +513,10 @@ class Validate extends Factory implements ValidateInterface
         if (!empty($option)) {
             if (strpos($option, $delimiter) !== false) {
                 $nice = str_replace($delimiter, $delimiter . ' ', $option);
-                $pos = strrpos($this->currentOptions, $delimiter . ' ');
+                $pos = strrpos($nice, $delimiter . ' ');
 
                 if ($pos !== false) {
-                    $nice = substr_replace($this->currentOptions, ' or ', $pos, 2);
+                    $nice = substr_replace($nice, ' or ', $pos, 2);
                 }
             } else {
                 $nice = $option;

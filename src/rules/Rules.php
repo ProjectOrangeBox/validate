@@ -107,7 +107,11 @@ class Rules extends RuleAbstract
 
         $this->input  = preg_replace('/[^\-\+0-9]+/', '', $this->input);
 
-        $prefix = ($this->input[0] == '-' || $this->input[0] == '+') ? $this->input[0] : '';
+        $prefix = '';
+
+        if (isset($this->input[0])) {
+            $prefix = ($this->input[0] == '-' || $this->input[0] == '+') ? $this->input[0] : '';
+        }
 
         $this->input  = $prefix . preg_replace('/[^0-9]+/', '', $this->input);
 
@@ -283,7 +287,7 @@ class Rules extends RuleAbstract
     {
         $this->inputIsNumber();
 
-        if (preg_match('/^-?\d{1,}$/', $this->input) !== 1) {
+        if (preg_match('/^\d+$/', $this->input) !== 1) {
             throw new RuleFailed('%s is not a natural number.');
         }
     }
@@ -292,7 +296,7 @@ class Rules extends RuleAbstract
     {
         $this->inputIsNumber();
 
-        if (preg_match('/^-?\d{1,}$/', $this->input) !== 1 || $this->input === '0') {
+        if (preg_match('/^\d+$/', $this->input) !== 1 || $this->input === '0') {
             throw new RuleFailed('%s is not a natural number greater than 0.');
         }
     }
@@ -351,7 +355,7 @@ class Rules extends RuleAbstract
 
     public function isStdClass(): void
     {
-        if (!is_object($this->input) || get_class($this->input) == \stdClass::class) {
+        if (!is_object($this->input) || get_class($this->input) != \stdClass::class) {
             throw new RuleFailed('%s is not a Standard Class.');
         }
     }
