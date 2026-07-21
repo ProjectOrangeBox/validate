@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace peels\validate;
 
-use peels\validate\Notation;
+use orange\rules\Notation;
+use orange\rules\Registry;
 use orange\framework\base\Factory;
-use peels\validate\rules\RuleAbstract;
-use peels\validate\exceptions\RuleFailed;
-use peels\validate\exceptions\InvalidValue;
-use peels\validate\exceptions\RuleNotFound;
+use orange\rules\exceptions\RuleFailed;
 use orange\framework\traits\ConfigurationTrait;
 use peels\validate\exceptions\ValidationFailed;
 use peels\validate\interfaces\ValidateInterface;
@@ -45,8 +43,8 @@ class Validate extends Factory implements ValidateInterface
     // public so rules can grab it if they need to
     protected string $defaultOptionDelimiter = ',';
 
-    // array of rule "names" to the classes and methods they call
-    protected array $knownRules = [];
+    // pluggable name => Class::method lookup for rules/filters/casts
+    protected Registry $registry;
 
     protected array $ruleSet = [];
 
@@ -82,7 +80,8 @@ class Validate extends Factory implements ValidateInterface
         $this->optionRightDelimiter = $this->config['optionRightDelimiter'] ?? $this->optionRightDelimiter;
         $this->defaultOptionDelimiter = $this->config['defaultOptionDelimiter'] ?? $this->defaultOptionDelimiter;
 
-        // add all of the rules
+        // seed with orange/rules' built-ins, then layer on any config overrides/additions
+        $this->registry = new Registry();
         $this->addRules($this->config['rules']);
 
         $this->notation = new Notation($this->notationDelimiter);
@@ -147,8 +146,7 @@ class Validate extends Factory implements ValidateInterface
      */
     public function addRule(string $name, string $classMethod): self
     {
-        // normalize the name to lowercase
-        $this->knownRules[strtolower($name)] = $classMethod;
+        $this->registry->addRule($name, $classMethod);
 
         return $this;
     }
@@ -161,10 +159,7 @@ class Validate extends Factory implements ValidateInterface
      */
     public function addRules(array $rules): self
     {
-        // add an array of rules
-        foreach ($rules as $name => $classMethod) {
-            $this->addRule($name, $classMethod);
-        }
+        $this->registry->addRules($rules);
 
         return $this;
     }
@@ -527,8 +522,8 @@ class Validate extends Factory implements ValidateInterface
     }
 
     /**
-     * Call the rule class and method
-
+     * Parse "rule[options]" syntax, then resolve/instantiate/invoke via the registry
+     *
      * @param mixed &$value
      * @param string $rule
      * @return void
@@ -551,32 +546,9 @@ class Validate extends Factory implements ValidateInterface
             $this->currentRule = $rule;
             $this->currentOptions = $this->makeOptionsLookNice($options);
 
-            // normalize rule name
-            $rule = strtolower($rule);
-
-            if (isset($this->knownRules[$rule])) {
-                list($class, $method) = explode('::', $this->knownRules[$rule], 2);
-            } else {
-                throw new RuleNotFound('Unknown Rule or Filter "' . $rule . '".');
-            }
-
-            // make instance - this should autoload
-            if (class_exists($class, true)) {
-                $instance = new $class($value, $options, $this->config, $this);
-
-                if (!$instance instanceof RuleAbstract) {
-                    throw new InvalidValue('"' . $class . '" is not an instance of RuleAbstract.');
-                }
-            } else {
-                throw new RuleNotFound('Unknown Class "' . $class . '".');
-            }
-
-            if (method_exists($instance, $method)) {
-                // throws an error on fail this is captured in validateSingleValueSingleRule()
-                $instance->$method();
-            } else {
-                throw new RuleNotFound('Unknown Method "' . $method . '" on Class "' . $class . '".');
-            }
+            // resolve, instantiate, and invoke - throws RuleFailed on failure,
+            // caught by validateSingleValueSingleRule()
+            $this->registry->call($rule, $value, $options, $this->config, $this);
         }
     }
 }

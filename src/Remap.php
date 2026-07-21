@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace peels\validate;
 
-use peels\validate\exceptions\InvalidValue;
+use orange\rules\exceptions\InvalidValue;
 use peels\validate\interfaces\RemapInterface;
 use orange\framework\interfaces\InputInterface;
 use orange\framework\base\Singleton;

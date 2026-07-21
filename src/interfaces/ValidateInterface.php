@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace peels\validate\interfaces;
 
+use orange\rules\RuleContextInterface;
+
 /**
  * Contract for validating scalar and structured input using named rule sets.
+ *
+ * Extends orange\rules\RuleContextInterface (getValues/values/stopProcessing)
+ * so a Validate instance can be passed directly as the context rules use for
+ * cross-field access.
  *
  * @example
  *   $validData = $validate
@@ -18,7 +24,7 @@ namespace peels\validate\interfaces;
  *
  * @package peels\validate\interfaces
  */
-interface ValidateInterface
+interface ValidateInterface extends RuleContextInterface
 {
     /**
      * Reset the validator to an empty state.

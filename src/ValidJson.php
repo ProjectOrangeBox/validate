@@ -6,7 +6,7 @@ namespace peels\validate;
 
 use peels\validate\Filter;
 use peels\validate\WildNotation;
-use peels\validate\exceptions\RuleFailed;
+use orange\rules\exceptions\RuleFailed;
 use orange\framework\interfaces\InputInterface;
 use peels\validate\interfaces\ValidateInterface;
 
