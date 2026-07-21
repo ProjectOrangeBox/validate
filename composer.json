@@ -1,0 +1,31 @@
+{
+    "name": "orange/validate",
+    "description": "Validation, filtering, remapping, and notation helpers with a pluggable rule system.",
+    "type": "library",
+    "homepage": "https://github.com/ProjectOrangeBox/validate",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Don Myers",
+            "email": "donmyers@me.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ProjectOrangeBox/validate/issues",
+        "source": "https://github.com/ProjectOrangeBox/validate"
+    },
+    "require": {
+        "php": ">=8.4",
+        "orange/framework": "dev-main"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^13.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "peels\\validate\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
