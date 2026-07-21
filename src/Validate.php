@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace peels\validate;
+namespace orange\validate;
 
 use orange\rules\Notation;
 use orange\rules\Registry;
 use orange\framework\base\Factory;
 use orange\rules\exceptions\RuleFailed;
 use orange\framework\traits\ConfigurationTrait;
-use peels\validate\exceptions\ValidationFailed;
-use peels\validate\interfaces\ValidateInterface;
+use orange\validate\exceptions\ValidationFailed;
+use orange\validate\interfaces\ValidateInterface;
 
 class Validate extends Factory implements ValidateInterface
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace peels\validate;
+namespace orange\validate;
 
 use orange\framework\base\Singleton;
-use peels\validate\interfaces\FilterInterface;
-use peels\validate\interfaces\ValidateInterface;
+use orange\validate\interfaces\FilterInterface;
+use orange\validate\interfaces\ValidateInterface;
 
 /**
  * Class to pull data from input with validation & filtering rules as well as support for default values

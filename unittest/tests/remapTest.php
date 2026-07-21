@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use orange\framework\Input;
-use peels\validate\Remap;
+use orange\validate\Remap;
 
 final class remapTest extends \unitTestHelper
 {

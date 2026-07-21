@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace peels\validate;
+namespace orange\validate;
 
 use orange\rules\exceptions\InvalidValue;
-use peels\validate\interfaces\RemapInterface;
+use orange\validate\interfaces\RemapInterface;
 use orange\framework\interfaces\InputInterface;
 use orange\framework\base\Singleton;
 

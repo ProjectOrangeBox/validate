@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace peels\validate\interfaces;
+namespace orange\validate\interfaces;
 
 /**
  * Defines the contract for mapping rule sets to values and executing validation filters.
  *
- * @package peels\validate\interfaces
+ * @package orange\validate\interfaces
  */
 interface FilterInterface
 {

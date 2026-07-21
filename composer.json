@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "peels\\validate\\": "src/"
+            "orange\\validate\\": "src/"
         }
     },
     "minimum-stability": "dev",

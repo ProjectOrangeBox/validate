@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use peels\validate\Validate;
-use peels\validate\exceptions\ValidationFailed;
+use orange\validate\Validate;
+use orange\validate\exceptions\ValidationFailed;
 
 final class validateTest extends \unitTestHelper
 {

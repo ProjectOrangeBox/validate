@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace peels\validate\interfaces;
+namespace orange\validate\interfaces;
 
 /**
  * Defines the contract for binding and invoking remapping rule sets.
  *
- * @package peels\validate\interfaces
+ * @package orange\validate\interfaces
  */
 interface RemapInterface
 {

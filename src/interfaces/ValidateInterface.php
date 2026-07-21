@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace peels\validate\interfaces;
+namespace orange\validate\interfaces;
 
 use orange\rules\RuleContextInterface;
 
@@ -22,7 +22,7 @@ use orange\rules\RuleContextInterface;
  * @example
  *   $single = $validate->value('Johnny', 'isString|notEmpty', 'Name');
  *
- * @package peels\validate\interfaces
+ * @package orange\validate\interfaces
  */
 interface ValidateInterface extends RuleContextInterface
 {

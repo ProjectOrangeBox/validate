@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace peels\validate;
+namespace orange\validate;
 
-use peels\validate\Filter;
-use peels\validate\WildNotation;
+use orange\validate\Filter;
+use orange\validate\WildNotation;
 use orange\rules\exceptions\RuleFailed;
 use orange\framework\interfaces\InputInterface;
-use peels\validate\interfaces\ValidateInterface;
+use orange\validate\interfaces\ValidateInterface;
 
 /**
  * Class ValidJson
  * Validates JSON data against a set of rules.
  * Uses WildNotation to access nested values within the JSON structure.
  *
- * @package peels\validate
+ * @package orange\validate
  */
 class ValidJson extends Filter
 {

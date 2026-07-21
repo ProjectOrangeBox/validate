@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace peels\validate\exceptions;
+namespace orange\validate\exceptions;
 
 use Throwable;
-use peels\validate\exceptions\ValidateException;
+use orange\validate\exceptions\ValidateException;
 
 class ValidationFailed extends ValidateException
 {

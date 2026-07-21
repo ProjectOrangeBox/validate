@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use peels\validate\Validate;
-use peels\validate\ValidJson;
-use peels\validate\exceptions\ValidationFailed;
+use orange\validate\Validate;
+use orange\validate\ValidJson;
+use orange\validate\exceptions\ValidationFailed;
 
 final class JsonTest extends \unitTestHelper
 {

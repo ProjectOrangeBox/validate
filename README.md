@@ -5,8 +5,8 @@ A rule-based validation and filtering pipeline for arrays of input data. Rules a
 ## Example
 
 ```php
-use peels\validate\Validate;
-use peels\validate\exceptions\ValidationFailed;
+use orange\validate\Validate;
+use orange\validate\exceptions\ValidationFailed;
 
 $validate = Validate::getInstance($config); // config merges over validate/src/config/validate.php
 

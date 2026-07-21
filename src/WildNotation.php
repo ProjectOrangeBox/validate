@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace peels\validate;
+namespace orange\validate;
 
 use InvalidArgumentException;
 use RecursiveArrayIterator;
@@ -39,7 +39,7 @@ use RecursiveIteratorIterator;
  * // Get a non-existing path with a default value
  * $nonExisting = $wild->get('users.*.email', 'not found'); // Returns 'not found'
  *
- * @package peels\validate
+ * @package orange\validate
  */
 class WildNotation
 {
