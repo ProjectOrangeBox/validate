@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace orange\validate;
 
-use orange\rules\Notation;
-use orange\rules\Registry;
+use orange\validate\Notation;
 use orange\framework\base\Factory;
-use orange\rules\exceptions\RuleFailed;
+use orange\validate\rules\RuleAbstract;
+use orange\validate\exceptions\RuleFailed;
+use orange\validate\exceptions\InvalidValue;
+use orange\validate\exceptions\RuleNotFound;
 use orange\framework\traits\ConfigurationTrait;
 use orange\validate\exceptions\ValidationFailed;
 use orange\validate\interfaces\ValidateInterface;
@@ -43,8 +45,8 @@ class Validate extends Factory implements ValidateInterface
     // public so rules can grab it if they need to
     protected string $defaultOptionDelimiter = ',';
 
-    // pluggable name => Class::method lookup for rules/filters/casts
-    protected Registry $registry;
+    // array of rule "names" to the classes and methods they call
+    protected array $knownRules = [];
 
     protected array $ruleSet = [];
 
@@ -80,8 +82,7 @@ class Validate extends Factory implements ValidateInterface
         $this->optionRightDelimiter = $this->config['optionRightDelimiter'] ?? $this->optionRightDelimiter;
         $this->defaultOptionDelimiter = $this->config['defaultOptionDelimiter'] ?? $this->defaultOptionDelimiter;
 
-        // seed with orange/rules' built-ins, then layer on any config overrides/additions
-        $this->registry = new Registry();
+        // add all of the rules
         $this->addRules($this->config['rules']);
 
         $this->notation = new Notation($this->notationDelimiter);
@@ -146,7 +147,8 @@ class Validate extends Factory implements ValidateInterface
      */
     public function addRule(string $name, string $classMethod): self
     {
-        $this->registry->addRule($name, $classMethod);
+        // normalize the name to lowercase
+        $this->knownRules[strtolower($name)] = $classMethod;
 
         return $this;
     }
@@ -159,7 +161,10 @@ class Validate extends Factory implements ValidateInterface
      */
     public function addRules(array $rules): self
     {
-        $this->registry->addRules($rules);
+        // add an array of rules
+        foreach ($rules as $name => $classMethod) {
+            $this->addRule($name, $classMethod);
+        }
 
         return $this;
     }
@@ -264,10 +269,10 @@ class Validate extends Factory implements ValidateInterface
      * @param string $human
      * @param string $options
      * @param string $rule
-     * @param mixed $input
+     * @param string $input
      * @return Validate
      */
-    public function addError(string $errorMsg, string $human = '', string $options = '', string $rule = '', mixed $input = ''): self
+    public function addError(string $errorMsg, string $human = '', string $options = '', string $rule = '', string $input = ''): self
     {
         // There are %d monkeys in the %s (in order)
         // The %2$s contains %1$d monkeys (arg by number)
@@ -466,10 +471,7 @@ class Validate extends Factory implements ValidateInterface
             $this->callRule($input, $rule);
         } catch (RuleFailed $e) {
             // if the rule or filter threw an error it is captured here
-            // $previousValue is passed as-is (not cast to string) since it may be
-            // an array or an object without __toString(), either of which would
-            // throw when coerced to string
-            $this->addError($e->getMessage(), $human, $this->currentOptions, $this->currentRule, $previousValue);
+            $this->addError($e->getMessage(), $human, $this->currentOptions, $this->currentRule, (string)$previousValue);
 
             // stop on first error
             $this->stopProcessing = true;
@@ -508,10 +510,10 @@ class Validate extends Factory implements ValidateInterface
         if (!empty($option)) {
             if (strpos($option, $delimiter) !== false) {
                 $nice = str_replace($delimiter, $delimiter . ' ', $option);
-                $pos = strrpos($nice, $delimiter . ' ');
+                $pos = strrpos($this->currentOptions, $delimiter . ' ');
 
                 if ($pos !== false) {
-                    $nice = substr_replace($nice, ' or ', $pos, 2);
+                    $nice = substr_replace($this->currentOptions, ' or ', $pos, 2);
                 }
             } else {
                 $nice = $option;
@@ -522,8 +524,8 @@ class Validate extends Factory implements ValidateInterface
     }
 
     /**
-     * Parse "rule[options]" syntax, then resolve/instantiate/invoke via the registry
-     *
+     * Call the rule class and method
+
      * @param mixed &$value
      * @param string $rule
      * @return void
@@ -546,9 +548,32 @@ class Validate extends Factory implements ValidateInterface
             $this->currentRule = $rule;
             $this->currentOptions = $this->makeOptionsLookNice($options);
 
-            // resolve, instantiate, and invoke - throws RuleFailed on failure,
-            // caught by validateSingleValueSingleRule()
-            $this->registry->call($rule, $value, $options, $this->config, $this);
+            // normalize rule name
+            $rule = strtolower($rule);
+
+            if (isset($this->knownRules[$rule])) {
+                list($class, $method) = explode('::', $this->knownRules[$rule], 2);
+            } else {
+                throw new RuleNotFound('Unknown Rule or Filter "' . $rule . '".');
+            }
+
+            // make instance - this should autoload
+            if (class_exists($class, true)) {
+                $instance = new $class($value, $options, $this->config, $this);
+
+                if (!$instance instanceof RuleAbstract) {
+                    throw new InvalidValue('"' . $class . '" is not an instance of RuleAbstract.');
+                }
+            } else {
+                throw new RuleNotFound('Unknown Class "' . $class . '".');
+            }
+
+            if (method_exists($instance, $method)) {
+                // throws an error on fail this is captured in validateSingleValueSingleRule()
+                $instance->$method();
+            } else {
+                throw new RuleNotFound('Unknown Method "' . $method . '" on Class "' . $class . '".');
+            }
         }
     }
 }

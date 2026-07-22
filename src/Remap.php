@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace orange\validate;
 
-use orange\rules\exceptions\InvalidValue;
+use orange\validate\exceptions\InvalidValue;
 use orange\validate\interfaces\RemapInterface;
 use orange\framework\interfaces\InputInterface;
 use orange\framework\base\Singleton;

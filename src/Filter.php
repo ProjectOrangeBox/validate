@@ -63,10 +63,6 @@ class Filter extends Singleton implements FilterInterface
 
         if (isset($this->data[$setName])) {
             if (is_array($this->data[$setName])) {
-                if (!array_key_exists($key, $this->data[$setName])) {
-                    return $default;
-                }
-
                 $value = $this->data[$setName][$key];
             } else {
                 $value = $this->data[$setName];

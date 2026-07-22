@@ -7,4 +7,4 @@ else
     APPEND=""
 fi
 
-../../../bin/phpunit --colors --testdox --bootstrap bootstrap.php --testdox-html results.html ./tests$APPEND
+../../vendor/bin/phpunit --colors --testdox --bootstrap bootstrap.php --testdox-html results.html ./tests$APPEND

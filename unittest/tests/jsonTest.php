@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use orange\framework\Input;
 use orange\validate\Validate;
 use orange\validate\ValidJson;
 use orange\validate\exceptions\ValidationFailed;
@@ -37,7 +38,7 @@ final class JsonTest extends \unitTestHelper
 
     protected function setUp(): void
     {
-        $this->validJson = ValidJson::getInstance([], Validate::getInstance([]));
+        $this->validJson = ValidJson::getInstance(Validate::getInstance([]), Input::getInstance([]));
     }
 
     public function testIsTrue(): void

@@ -6,7 +6,7 @@ namespace orange\validate;
 
 use orange\validate\Filter;
 use orange\validate\WildNotation;
-use orange\rules\exceptions\RuleFailed;
+use orange\validate\exceptions\RuleFailed;
 use orange\framework\interfaces\InputInterface;
 use orange\validate\interfaces\ValidateInterface;
 
