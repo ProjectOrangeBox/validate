@@ -18,8 +18,10 @@ if (!function_exists('orangeErrorHandler')) {
     }
 }
 
-function logMsg()
+function logMsg() {}
+function isLogEnabled()
 {
+    return false;
 }
 
 if (!function_exists('concat')) {

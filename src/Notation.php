@@ -25,7 +25,7 @@ class Notation
      * @param string|null $delimiter
      * @return void
      */
-    public function __construct(string $delimiter = null)
+    public function __construct(?string $delimiter = null)
     {
         $this->delimiter = $delimiter ?? $this->delimiter;
         $this->isNull = chr(0);
