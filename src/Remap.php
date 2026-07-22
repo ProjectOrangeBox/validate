@@ -147,7 +147,7 @@ class Remap extends Singleton implements RemapInterface
      */
     protected function formula($expression, $arguments): mixed
     {
-        logMsg('INFO', __METHOD__ . ' formula ' . $expression);
+        logMsg('DEBUG', __METHOD__ . ' formula ' . $expression);
         logMsg('DEBUG', '', ['expression' => $expression, 'arguments' => $arguments]);
 
         // create a closure in it's own jailed environment
@@ -165,7 +165,7 @@ class Remap extends Singleton implements RemapInterface
      */
     protected function makePHPVariables(string $input): string
     {
-        logMsg('INFO', __METHOD__ . ' ' . $input);
+        logMsg('DEBUG', __METHOD__ . ' ' . $input);
 
         $re = ';(?<prefix>[(,])(?<variable>[A-Za-z0-9_]+);';
         $matches = [];
@@ -176,7 +176,7 @@ class Remap extends Singleton implements RemapInterface
             $input = str_replace($match['prefix'] . $match['variable'], $match['prefix'] . '$' . $match['variable'], $input);
         }
 
-        logMsg('INFO', ' > ', ['input' => $input]);
+        logMsg('DEBUG', ' > ', ['input' => $input]);
 
         return $input;
     }
