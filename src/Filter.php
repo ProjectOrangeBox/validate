@@ -15,15 +15,8 @@ use orange\validate\interfaces\ValidateInterface;
  */
 class Filter extends Singleton implements FilterInterface
 {
-    protected ValidateInterface $validateService;
-
-    protected array $data = [];
-
-    protected function __construct(array $config, ValidateInterface $validate)
+    protected function __construct(protected array $data, protected ValidateInterface $validateService)
     {
-        $this->validateService = $validate;
-
-        $this->data = $config;
     }
 
     /**

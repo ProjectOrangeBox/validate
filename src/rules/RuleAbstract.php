@@ -11,28 +11,20 @@ use orange\validate\interfaces\ValidateInterface;
 abstract class RuleAbstract
 {
     protected mixed $input = null;
-    protected mixed $options = '';
     // simply for human "grammar" this is a pointer to options
     protected $option;
-
-    protected array $config = [];
-    protected ValidateInterface $validateService;
 
     protected string $defaultOptionSeparator = ',';
     // local instance of notation
     protected Notation $notation;
 
-    public function __construct(mixed &$input, string $options, array $config, ValidateInterface $validateService)
+    public function __construct(mixed &$input, protected string $options, protected array $config, protected ValidateInterface $validateService)
     {
         // work on by reference
         $this->input = &$input;
-        $this->options = $options;
         $this->option = &$this->options;
 
-        $this->config = $config;
-        $this->validateService = $validateService;
-
-        $this->defaultOptionSeparator = $config['defaultOptionSeparator'] ?? $this->defaultOptionSeparator;
+        $this->defaultOptionSeparator = $this->config['defaultOptionSeparator'] ?? $this->defaultOptionSeparator;
 
         $delimiter = $this->config['notationDelimiter'] ?? '';
 
@@ -76,7 +68,7 @@ abstract class RuleAbstract
         $value = $this->convert2bool();
 
         if ($value === null) {
-            $errorMsg = $errorMsg ?? '%s is not considered a boolean value.';
+            $errorMsg ??= '%s is not considered a boolean value.';
 
             throw new RuleFailed($errorMsg);
         }
@@ -89,7 +81,7 @@ abstract class RuleAbstract
     protected function inputIsStringNumber(?string $errorMsg = null): self
     {
         if (!is_scalar($this->input) || is_bool($this->input) || $this->input === '') {
-            $errorMsg = $errorMsg ?? '%s must be a string or numbers and not empty.';
+            $errorMsg ??= '%s must be a string or numbers and not empty.';
 
             throw new RuleFailed($errorMsg);
         }
@@ -102,7 +94,7 @@ abstract class RuleAbstract
     protected function inputIsNumber(?string $errorMsg = null): self
     {
         if (!is_scalar($this->input) || is_bool($this->input) || $this->input === '') {
-            $errorMsg = $errorMsg ?? '%s must be numbers and not empty.';
+            $errorMsg ??= '%s must be numbers and not empty.';
 
             throw new RuleFailed($errorMsg);
         }
@@ -115,7 +107,7 @@ abstract class RuleAbstract
     protected function inputIsStringNumberEmpty(?string $errorMsg = null): self
     {
         if (!is_scalar($this->input) || is_bool($this->input)) {
-            $errorMsg = $errorMsg ?? '%s must be a string or numbers.';
+            $errorMsg ??= '%s must be a string or numbers.';
 
             throw new RuleFailed($errorMsg);
         }
@@ -128,7 +120,7 @@ abstract class RuleAbstract
     protected function inputIsStringNumberBoolean(?string $errorMsg = null): self
     {
         if (!is_scalar($this->input) || $this->input === '') {
-            $errorMsg = $errorMsg ?? '%s must be a string, numbers or boolean value.';
+            $errorMsg ??= '%s must be a string, numbers or boolean value.';
 
             throw new RuleFailed($errorMsg);
         }
@@ -141,7 +133,7 @@ abstract class RuleAbstract
     protected function inputIsStringNumberBooleanEmpty(?string $errorMsg = null): self
     {
         if (!is_scalar($this->input)) {
-            $errorMsg = $errorMsg ?? '%s must be a string, numbers, boolean value or empty.';
+            $errorMsg ??= '%s must be a string, numbers, boolean value or empty.';
 
             throw new RuleFailed($errorMsg);
         }
@@ -154,7 +146,7 @@ abstract class RuleAbstract
     protected function inputIsArrayObject(?string $errorMsg = null): self
     {
         if (!is_array($this->input) || !is_object($this->input) || $this->input === '') {
-            $errorMsg = $errorMsg ?? '%s must be a array or object.';
+            $errorMsg ??= '%s must be a array or object.';
 
             throw new RuleFailed($errorMsg);
         }
@@ -165,7 +157,7 @@ abstract class RuleAbstract
     protected function inputIsInteger(?string $errorMsg = null): self
     {
         if (preg_match('/^-?\d+$/', (string)$this->input) !== 1) {
-            $errorMsg = $errorMsg ?? '%s must be an integer.';
+            $errorMsg ??= '%s must be an integer.';
 
             throw new RuleFailed($errorMsg);
         }
@@ -178,7 +170,7 @@ abstract class RuleAbstract
     protected function inputIsRequired(?string $errorMsg = null): self
     {
         if ($this->input === '') {
-            $errorMsg = $errorMsg ?? 'you must include a option for %s.';
+            $errorMsg ??= 'you must include a option for %s.';
 
             throw new RuleFailed($errorMsg);
         }
@@ -233,7 +225,7 @@ abstract class RuleAbstract
 
     protected function stripInput($strip): self
     {
-        $this->input = str_replace(str_split($strip), '', (string)$this->input);
+        $this->input = str_replace(str_split((string) $strip), '', (string)$this->input);
 
         return $this;
     }

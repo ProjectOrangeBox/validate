@@ -36,14 +36,10 @@ class Cast extends RuleAbstract
 
     public function bool(): void
     {
-        switch (strtolower((string)$this->input)) {
-            case 'y':
-            case '1':
-                $this->input = true;
-                break;
-            default:
-                $this->input = false;
-        }
+        $this->input = match (strtolower((string)$this->input)) {
+            'y', '1' => true,
+            default => false,
+        };
     }
 
     public function boolean(): void

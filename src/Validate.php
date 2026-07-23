@@ -238,7 +238,7 @@ class Validate extends Factory implements ValidateInterface
             }
 
             if (!is_array($rules)) {
-                $rules = explode($this->ruleDelimiter, $rules);
+                $rules = explode($this->ruleDelimiter, (string) $rules);
             }
 
             if ($this->notationDelimiter == '') {
@@ -508,7 +508,7 @@ class Validate extends Factory implements ValidateInterface
 
         // try to format the options into something human readable incase they need this in there error message
         if (!empty($option)) {
-            if (strpos($option, $delimiter) !== false) {
+            if (str_contains($option, $delimiter)) {
                 $nice = str_replace($delimiter, $delimiter . ' ', $option);
                 $pos = strrpos($this->currentOptions, $delimiter . ' ');
 
@@ -552,7 +552,7 @@ class Validate extends Factory implements ValidateInterface
             $rule = strtolower($rule);
 
             if (isset($this->knownRules[$rule])) {
-                list($class, $method) = explode('::', $this->knownRules[$rule], 2);
+                [$class, $method] = explode('::', $this->knownRules[$rule], 2);
             } else {
                 throw new RuleNotFound('Unknown Rule or Filter "' . $rule . '".');
             }

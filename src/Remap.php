@@ -99,11 +99,11 @@ class Remap extends Singleton implements RemapInterface
             $segment2Value = $array[$segment2] ?? '';
 
             // handle any formulas in segment 1 and 2
-            if (substr($segment1, 0, 1) == '@') {
+            if (str_starts_with($segment1, '@')) {
                 $segment1Value = $this->formula(ltrim($segment1, '@'), $array);
             }
 
-            if (substr($segment2, 0, 1) == '@') {
+            if (str_starts_with($segment2, '@')) {
                 $segment2Value = $this->formula(ltrim($segment2, '@'), $array);
             }
 

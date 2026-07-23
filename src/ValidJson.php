@@ -31,6 +31,7 @@ class ValidJson extends Filter
      * @return mixed
      * @throws RuleFailed
      */
+    #[\Override]
     protected function runRule(mixed $json, string|array $rule): mixed
     {
         // if a string, decode it
@@ -47,7 +48,7 @@ class ValidJson extends Filter
 
         foreach ($rulesAsArray as $rule) {
             // parse out function name and dot notation
-            $results = preg_match('/(?<rule>[^\(]+)\((?<dot>[^\)]+)\)(?<options>.*)/i', $rule, $matches, PREG_OFFSET_CAPTURE, 0);
+            $results = preg_match('/(?<rule>[^\(]+)\((?<dot>[^\)]+)\)(?<options>.*)/i', (string) $rule, $matches, PREG_OFFSET_CAPTURE, 0);
 
             if ($results === 0 || $results === false) {
                 throw new RuleFailed($rule);
@@ -56,7 +57,7 @@ class ValidJson extends Filter
             $rule = $matches['rule'][0] . $matches['options'][0];
             $dotNotation = $matches['dot'][0];
 
-            $value = (new WildNotation($json))->get($dotNotation);
+            $value = new WildNotation($json)->get($dotNotation);
 
             /**
              * returns an array
@@ -65,7 +66,7 @@ class ValidJson extends Filter
              * foreach
              * isBool(people.*.male)
              */
-            if (is_array($value) && substr($dotNotation, -1) != '*') {
+            if (is_array($value) && !str_ends_with($dotNotation, '*')) {
                 foreach ($value as $v) {
                     // throws exception on fail
                     // returns value on success

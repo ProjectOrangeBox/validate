@@ -55,7 +55,7 @@ class Notation
     public function set(array|object &$data, string $key, mixed $value): void
     {
         // if the dot notation doesn't even contain the dot separator treat as a regular array or stdClass
-        if (strpos($key, $this->delimiter) === false) {
+        if (!str_contains($key, $this->delimiter)) {
             if (is_object($data)) {
                 $data->$key = $value;
             } else {
@@ -106,7 +106,7 @@ class Notation
     public function get(array|object $data, string $key, mixed $default = null): mixed
     {
         // this function has multiple returns
-        if (strpos($key, $this->delimiter) === false) {
+        if (!str_contains($key, $this->delimiter)) {
             if (is_object($data)) {
                 if (isset($data->$key)) {
                     $data = $data->$key;
@@ -167,7 +167,7 @@ class Notation
     public function unset(mixed &$data, string $key): void
     {
         // if the dot notation doesn't even contain the dot separator treat as a regular array or stdClass
-        if (strpos($key, $this->delimiter) === false) {
+        if (!str_contains($key, $this->delimiter)) {
             if (is_object($data)) {
                 unset($data->$key);
             } else {
@@ -238,7 +238,7 @@ class Notation
         $newArray = [];
 
         foreach ($array as $key => $value) {
-            $dots = explode($this->delimiter, $key);
+            $dots = explode($this->delimiter, (string) $key);
 
             if (count($dots) > 1) {
                 $last = &$newArray[$dots[0]];

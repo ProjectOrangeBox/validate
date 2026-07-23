@@ -190,7 +190,7 @@ class WildNotation
             foreach ($path as $item) {
                 $val = $real[$index] ?? false;
 
-                if (ctype_digit($item)) {
+                if (ctype_digit((string) $item)) {
                     $item = (int) $item;
                 }
 
